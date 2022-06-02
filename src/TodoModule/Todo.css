@@ -1,0 +1,56 @@
+.todo-container{
+    display: flex;
+}
+
+.todo-containerComponents{
+    width: 400px;
+    height: 821px;
+    left: 0px;
+    top: 0px;
+
+    background: #C4C4C4;
+}
+
+.todo-presentationComponents{
+    background: #E5E5E5;
+    width: 1000px;
+    padding-left: 40px;
+}
+
+.todo-title{
+    width: 106px;
+    height: 44px;
+    padding-left: 20px;
+
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 36px;
+    color: #000000;
+}
+
+.todoItemHistory_title{
+    margin-top: 280px;
+}
+
+.historyItem{
+    width: 733px;
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 14px;
+    color: #000000;
+}
+.historyItem-line{
+    width: 886px;
+    height: 0px;
+    margin-bottom: 15px;
+    border: 1px solid #000000;
+}
+
+.historyItem-info{
+    width: 886px;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px;
+}

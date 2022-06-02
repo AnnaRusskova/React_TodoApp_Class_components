@@ -1,0 +1,17 @@
+.todoSearchItem-line{
+    width: 396px;
+    height: 0px;
+    border: 2px solid #9A9A9A;
+}
+
+.todoSearchItem-input {
+    width: 348px;
+    height: 30px;
+    margin: 20px 14px;
+
+    background: #FFFFFF;
+    border-radius: 15px;
+    
+    padding-left: 20px;
+    border: none;
+}

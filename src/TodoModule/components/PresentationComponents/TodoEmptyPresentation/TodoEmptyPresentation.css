@@ -1,0 +1,11 @@
+.todoEmpty-title{
+    position: absolute;
+    min-width:350px;
+    left: 50%;
+    top: 50%;
+
+    font-weight: 900;
+    font-size: 36px;
+
+    color: #BBBBBB;
+}
