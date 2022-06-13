@@ -4,7 +4,7 @@
 
 .todo-containerComponents{
     width: 400px;
-    height: 821px;
+    min-height: 821px;
     left: 0px;
     top: 0px;
 

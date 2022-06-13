@@ -26,17 +26,37 @@ export class Todo extends Component {
             {id: '5', title: 'Make backup of HDD', description: 'Use TimeMachine for that', completed: false, history: 
                 [{field: '', action: '', prevValue: '', currentValue: '', appliedAt: ''}], selected: false
             }
-        ]
+        ],
+        filter:''
     };
+
+    getRandomId = (prefix = 'id') =>{
+        while(true){
+            return `${prefix}-${Math.floor(Date.now() * Math.random())}`
+        } 
+    }
+
+    date = () => {
+        let dateNow = new Date().toLocaleDateString();
+        let timeNow = new Date().toLocaleTimeString();
+        return dateNow + ' ' + timeNow;
+    }
 
     onItemCompleted = (id) => {
 
         let todoItem = this.state.list.find(item => item.id === id) ;
+        let prevValueCompleton = todoItem.completed;
         let updatedItem = {...todoItem, completed: !todoItem.completed};
+        // console.log(updatedItem.history)
+        updatedItem.history.push(
+            {field: 'completion', action: todoItem.completed ? `The task is NOT completed` : `The task is completed`, 
+            prevValue: prevValueCompleton, currentValue: updatedItem.completed, appliedAt: this.date()}
+        )
+        // console.log(updatedItem.history)
 
         this.setState({
             list: this.state.list.map(item => item.id === id ? updatedItem : item)}, 
-        // () => console.log(this.state.list[0].completed)
+        // () => console.log(this.state)
         )
     }
 
@@ -54,17 +74,11 @@ export class Todo extends Component {
         })
     }
 
-    getRandomId = (prefix = 'id') =>{
-        while(true){
-            return `${prefix}-${Math.floor(Date.now() * Math.random())}`
-        } 
-    }
-
-    todoAddHandler = (newItem) => { 
+    todoAddHandler = (newItem) => {
         // console.log(newItem)
-        this.setState(
-            {list: [...this.state.list, newItem]},
-            ()=> console.log(this.state)
+        this.setState({
+            list: [...this.state.list, newItem]},
+            // ()=> console.log(this.state)
         )   
     }
     
@@ -74,16 +88,10 @@ export class Todo extends Component {
         this.setState({ 
             list: this.state.list.map(item => item.selected = false)
         })
-        // console.log(this.state)
-        let newItem =JSON.parse(JSON.stringify(this.state.list[0]));
-        newItem.title = this.state.title;
-        newItem.id= this.getRandomId();
-        newItem.completed= false;
-        newItem.description= '';
-        newItem.history[0].action = `Created task with title "${newItem.title}"`;
-        newItem.history[0].description = '';
-        newItem.history[0].appliedAt = this.date();
-        // console.log(newItem)
+     
+        let newItem = {id: this.getRandomId(), title: this.state.title, description: '', completed: false, history: 
+                [{field: 'title', action: `Created task with title "${this.state.title}"`, prevValue: '', currentValue: this.state.title, appliedAt: this.date()}], selected: false
+            }
         this.todoAddHandler(newItem);
     }
 
@@ -93,28 +101,22 @@ export class Todo extends Component {
         )
     }
 
-    date = () =>{
-        let dateNow = new Date().toLocaleDateString();
-        let timeNow = new Date().toLocaleTimeString();
-        return dateNow + ' ' + timeNow;
-    }
-
-    
-    onDescrSubmitHandler = (event) => {
+    onDescrSubmitHandler = (event) => { 
         event.preventDefault();
         this.state.list.filter(item => {
-            if(item.selected && this.state.updatedDescr){
-                item.history[0].prevValue = item.description; 
+            if(item.selected && this.state.updatedDescr && this.state.updatedDescr !== item.description){
+                let prevValueDescr = item.description;
                 item.description = this.state.updatedDescr;
-                item.history[0].currentValue = item.description;
-                item.history[0].action = `Changed task description from "${item.history[0].prevValue ? item.history[0].prevValue : 'no description'}" to "${item.history[0].currentValue}"`;
-                return item.history[0].appliedAt = this.state.timeChange
+
+                let newHistoryRecord = {field: 'description', action: `Changed task description from "${prevValueDescr}" to "${item.description}"`, prevValue: prevValueDescr, currentValue: this.state.updatedDescr, appliedAt: this.state.timeChange}
+                item.history.push(newHistoryRecord);
+                console.log(item.history);
+                return this.setState({list: [...this.state.list]});
+
             } else {
-                return item.description
+                return item.description;
             }
         })
-
-        this.setState({...this.state.list}) 
         // console.log(this.state)
     }
     
@@ -124,16 +126,32 @@ export class Todo extends Component {
             // ()=> console.log(this.state)
         )
     }
-    
+
+    onSearchTitleFilter = ({target}) => {
+        this.setState({ 
+            list: this.state.list.map(item => item.selected = false)
+        })
+
+        this.setState(
+            {list: [...this.state.list], filter: target.value.toLowerCase()}
+        )
+    }
+
+    onSearchSubmitHandler = (e) =>{
+        e.preventDefault();
+    }
 
     render(){
+       
         return (
             <div className='todo-container'>
                 <div className='todo-containerComponents'>
                     <h1 className='todo-title'>Todos</h1>
-                    <TodoSearchItem />
+                    <TodoSearchItem 
+                        onSearchTitleFilter = {this.onSearchTitleFilter}
+                        onSearchSubmitHandler = {this.onSearchSubmitHandler}/>
 
-                    {this.state.list.map(item =>
+                    {this.state.list.map(item => item.title.toLowerCase().includes(this.state.filter) &&
                         <TodoItem
                             key = {item.id}
                             item = {item}
@@ -157,11 +175,11 @@ export class Todo extends Component {
                             onDescrSubmitHandler = {this.onDescrSubmitHandler} />
                     )}
 
-                    {this.state.list.map(item => item.selected && this.onDescrSubmitHandler &&
-
-                     <HistoryItem 
-                        key = {item.id}
-                        item = {item} />
+                    {this.state.list.map(item => item.selected &&
+                        item.history.map(eachHistory => eachHistory &&
+                            <HistoryItem
+                            key = {this.getRandomId('historyId')}
+                            historyItem = {eachHistory} />)
                     )}
 
                     {this.state.list.every(item => !item.selected) ? <TodoEmptyPresentation/> : <></> }                  

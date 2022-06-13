@@ -6,12 +6,15 @@ export class HistoryItem extends Component{
         return (
             <>
                 <div className="historyItem">
-                    <div className="historyItem-line"></div>
+                    <div className={this.props.historyItem.action ? "historyItem-line" : null}></div>
                     <div className="historyItem-info">
-                        <div className="historyItem-text">{this.props.item.history[0].action}</div>
-                        <div className="historyItem-time">{this.props.item.history[0].appliedAt}</div>
+                        
+                        <div className="historyItem-text">{this.props.historyItem.action}</div>
+                        <div className="historyItem-time">{this.props.historyItem.appliedAt}</div>
+
                     </div>
                 </div>   
+                
             </>
         )
     }
