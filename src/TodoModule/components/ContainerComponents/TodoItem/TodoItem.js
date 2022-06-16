@@ -14,7 +14,7 @@ export class TodoItem extends Component{
                                 {this.props.item.completed ? "✔" : null} </div> 
                     </div>
                     <div 
-                        onClick = {() => this.props.onItemSelected((this.props.item.id))}
+                        onClick = { () => this.props.onItemSelected((this.props.item.id)) }
                         className="todoItem-info">
 
                         <div   
